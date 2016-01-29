@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Employee;
 use App\Appointment;
+use App\Title;
+use App\Department;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -54,9 +56,19 @@ class EmployeeController extends Controller
     public function show($id)
     {
         $employee = Employee::find($id);
+        $appointments = $employee->appointments;
+        $totalHours = 0;
+
+        foreach($appointments as $appointment){
+            $totalHours += str_replace(":", ".", date("G:i", strtotime($appointment->appointment_end_date) - strtotime($appointment->appointment_begin_date)));
+        }
+
         $this->viewData = [
-            'employee' => $employee,
-            'appointments' => $employee->appointments
+            'employee'      => $employee,
+            'appointments'  => $appointments,
+            'totalHours'    => $totalHours,
+            'titles'        => Title::all(),
+            'departments'   => Department::all()
         ];
 
         return view('employees.show')->with($this->viewData);

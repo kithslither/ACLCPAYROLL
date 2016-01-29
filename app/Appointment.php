@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Appointment extends Model
 {
+
+    protected $fillable = ['employee_id', 'title_id', 'department_id', 'appointment_begin_date', 'appointment_end_date'];
+
     public function employee(){
     	return $this->belongsTo('App\Employee');
     }
