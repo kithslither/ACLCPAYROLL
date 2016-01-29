@@ -6,6 +6,10 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
+    public function employee(){
+        return $this->hasOne('App\Employee');
+    }
+
     /**
      * The attributes that are mass assignable.
      *

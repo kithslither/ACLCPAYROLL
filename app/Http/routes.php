@@ -27,5 +27,12 @@ Route::group(['middleware' => 'web'], function () {
 	Route::get('/', function () {
 	    return view('welcome');
 	});
+});
+
+Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('/home', 'HomeController@index');
+    Route::get('/employees', function () {
+    	$employees = App\Employee::all()->toArray();
+    	var_dump($employees); die();
+    });	
 });
