@@ -33,7 +33,7 @@ class EmployeeController extends Controller
      */
     public function create()
     {
-        //
+        return view('employees.create');
     }
 
     /**
@@ -44,7 +44,14 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Employee::create([
+            'employee_number' => $request->employee_number,
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'highest_degree_earned' => $request->highest_degree_earned
+        ]);
+
+        return redirect('employees');
     }
 
     /**

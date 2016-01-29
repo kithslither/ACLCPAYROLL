@@ -12,7 +12,9 @@
             <!-- START TABS -->
             <ul class="nav nav-tabs">
                 <li class="active"><a data-toggle="tab" href="#info"><i class="glyphicon glyphicon-user"></i> Information</a></li>
-                <li><a href=" ">Add Employee</a></li>
+                <li>
+                    {!! Html::linkRoute('employees.create', 'Add Employee', []) !!}
+                </li>
                 <li class="dropdown"><a data-toggle="dropdown" class="dropdown-toggle" href="#">Dropdown <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a data-toggle="tab" href="#dropdown1">Dropdown1</a></li>
