@@ -17,4 +17,8 @@ class PaycheckHeader extends Model
     	return $this->belongsTo('App\Employee');
     }
 
+    public function deductions(){
+    	return $this->belongsToMany('App\Deduction', 'deduction_paycheck_header', 'paycheck_header_id', 'deduction_id');
+    }
+
 }

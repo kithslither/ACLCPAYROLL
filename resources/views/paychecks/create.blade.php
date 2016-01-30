@@ -30,12 +30,10 @@
 		</div>
 
 		<div class="form-group">
-			{!! Form::label('dedudction_id', 'Deduction: ') !!}
-			<select name="deduction_id" id="">
-				@foreach($deductions as $deduction)
-				<option value="{{ $deduction->id }}">{{ $deduction->deduction_type . " - " . $deduction->deduction_percentage . "%" }}</option>
-				@endforeach
-			</select>
+			<h5>Deductions: </h5>
+			@foreach($deductions as $deduction)
+				<input type="checkbox" name="deduction_ids[]" value="{{ $deduction->id }}"> {{ $deduction->deduction_type . " - " . $deduction->amount }} <br>
+			@endforeach
 		</div>
 		<div class="form-group">
 			{!! Form::submit('Create', ['class' => 'btn btn-primary form-control']) !!}

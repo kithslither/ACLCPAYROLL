@@ -56,13 +56,14 @@ class PaycheckController extends Controller
      */
     public function store(Request $request)
     {
-        PaycheckHeader::create([
+        $paycheckHeader = PaycheckHeader::create([
             'employee_id' => $request->employee_id,
             'check_number' => $request->check_number,
             'pay_period_begin_date' => $request->pay_period_begin_date,
-            'pay_period_end_date' => $request->pay_period_end_date,
-            'deduction_id' => $request->deduction_id
+            'pay_period_end_date' => $request->pay_period_end_date
         ]);
+
+        $paycheckHeader->deductions()->attach($request->deduction_ids);
 
         return redirect('employees');
     }

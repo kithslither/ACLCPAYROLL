@@ -9,7 +9,7 @@
     $(document).ready(function(){
         
         $("#rate").change(function(){
-            var amount = $(this).val() * $("#total_hours").text()
+            var amount = ($(this).val() * $("#total_hours").text()) - $("#deduction").text()
             $("#amount").text(amount);
             $("#hidden_amount").val(amount);
         });
@@ -63,6 +63,7 @@
                                     <th>Full Name</th>
                                     <th>Pay Period</th>
                                     <th>Rate per Hour</th>
+                                    <th>Deduction</th>
                                     <th>Total hours</th>
                                     <th>Amount</th>
                                     <th>Pay Type</th>
@@ -78,6 +79,13 @@
                                     <td>{{ date("M d Y", strtotime($paycheck->pay_period_begin_date)) . " - " . date("M d Y", strtotime($paycheck->pay_period_end_date)) }}</td>
                                     <td>
                                         <input type="number" id="rate">
+                                    </td>
+                                    <td id="deduction">
+                                        <?php $deductionAmount = 0; ?>
+                                        @foreach($paycheck->deductions as $deduction)
+                                            <?php $deductionAmount += $deduction->amount; ?>
+                                        @endforeach
+                                        {{ $deductionAmount }}
                                     </td>
                                     <td id="total_hours">
                                         <?php 
