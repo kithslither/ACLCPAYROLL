@@ -24,10 +24,8 @@
             </h1>
             <!-- START TABS -->
             <ul class="nav nav-tabs">
-                <li><a data-toggle="tab" href="#info"><i class="glyphicon glyphicon-user"></i> Information</a></li>
-                <li>
-                    {!! Html::linkRoute('employees.create', 'Add Employee', []) !!}
-                </li>
+                <li>{!! Html::linkRoute('employees.index', 'Employees', []) !!}</li>
+                <li>{!! Html::linkRoute('employees.create', 'Add Employee', []) !!}</li>
                 <li>{!! Html::linkRoute('paychecks.create', 'Generate Paycheck', []) !!}</li>
                 <li class="active">
                     <a href="#">Paychecks</a>
