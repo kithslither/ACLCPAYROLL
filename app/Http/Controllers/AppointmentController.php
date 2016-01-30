@@ -24,7 +24,7 @@ class AppointmentController extends Controller
             'title_id'                  => $request->title_id,
             'department_id'             => $request->department_id, 
             'appointment_begin_date'    => $request->appointment_begin_date,
-            'appointment_end_date'      => date("Y-m-d H:i:s", strtotime($request->appointment_end_date))
+            'appointment_end_date'      => $request->appointment_end_date
         ]);
         return redirect()->route('employees.show', [$request->employee_id]);
     }

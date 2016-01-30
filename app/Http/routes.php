@@ -35,4 +35,8 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::resource('appointments', 'AppointmentController', ['only' =>[
     	'store'
     ]]);
+    Route::resource('paychecks', 'PaycheckController', ['only' =>[
+    	'store', 'create', 'index'
+    ]]);
+    Route::post('/paychecks/pay', 'PaycheckController@pay');
 });

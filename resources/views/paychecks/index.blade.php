@@ -2,6 +2,19 @@
 
 
 @section('content')
+
+<script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
+<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+<script>
+    $(document).ready(function(){
+        
+        $("#rate").change(function(){
+            var amount = ($(this).val() * $("#total_hours").text()) - $("#deduction").text()
+            $("#amount").text(amount);
+            $("#hidden_amount").val(amount);
+        });
+    });
+</script>
 <div class="container-fluid">
     <!-- Page Heading -->
     <div class="row">
@@ -11,12 +24,12 @@
             </h1>
             <!-- START TABS -->
             <ul class="nav nav-tabs">
-                <li class="active"><a data-toggle="tab" href="#info">Employees</a></li>
-                <li>
-                    {!! Html::linkRoute('employees.create', 'Add Employee', []) !!}
-                </li>
+                <li>{!! Html::linkRoute('employees.index', 'Employees', []) !!}</li>
+                <li>{!! Html::linkRoute('employees.create', 'Add Employee', []) !!}</li>
                 <li>{!! Html::linkRoute('paychecks.create', 'Generate Paycheck', []) !!}</li>
-                <li>{!! Html::linkRoute('paychecks.index', 'Paychecks', []) !!}</li>
+                <li class="active">
+                    <a href="#">Paychecks</a>
+                </li>
                 <li class="dropdown"><a data-toggle="dropdown" class="dropdown-toggle" href="#">Dropdown <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a data-toggle="tab" href="#dropdown1">Dropdown1</a></li>
@@ -27,7 +40,7 @@
             <div class="tab-content">
                 <div id="info" class="tab-pane fade in active">
                     <div class="row">
-                        <div class="col-lg-6"><h3>Information</h3></div>
+                        <div class="col-lg-6"><h3>Paychecks</h3></div>
                         <div class="col-lg-6">
                             <form role="search" class="navbar-form navbar-right">
                                 <div class="form-group">
@@ -40,26 +53,75 @@
                     <hr>
                     <!-- Thumbs start here -->
                     <div class="row">
-                        @foreach($employees as $employee)
-                        <div class="col-lg-3">
-                            <div class="panel panel-default">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Paycheck ID</th>
+                                    <th>Check Number</th>
+                                    <th>Full Name</th>
+                                    <th>Pay Period</th>
+                                    <th>Rate per Hour</th>
+                                    <th>Deduction</th>
+                                    <th>Total hours</th>
+                                    <th>Amount</th>
+                                    <th>Pay Type</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($paychecks as $paycheck)
+                                <tr>
+                                    <td>{{ $paycheck->id }}</td>
+                                    <td>{{ $paycheck->check_number }}</td>
+                                    <td>{{ $paycheck->employee->first_name . " " . $paycheck->employee->last_name }}</td>
+                                    <td>{{ date("M d Y", strtotime($paycheck->pay_period_begin_date)) . " - " . date("M d Y", strtotime($paycheck->pay_period_end_date)) }}</td>
+                                    <td>
+                                        <input type="number" id="rate">
+                                    </td>
+                                    <td id="deduction">
+                                        <?php $deductionAmount = 0; ?>
+                                        @foreach($paycheck->deductions as $deduction)
+                                            <?php $deductionAmount += $deduction->amount; ?>
+                                        @endforeach
+                                        {{ $deductionAmount }}
+                                    </td>
+                                    <td id="total_hours">
+                                        <?php 
+                                            $totalHours = 0;
+                                            $appointments = $paycheck->employee->appointments()->where('status', 0)->get();
+                                        ?>
+                                        @foreach($appointments as $appointment)
+                                        <?php
+                                            $totalHours += str_replace(":", ".", date("G:i", strtotime($appointment->appointment_end_date) - strtotime($appointment->appointment_begin_date)));
+                                        ?>
+                                        @endforeach
+                                        {{ $totalHours }}
+                                    </td>
+                                    <td id="amount">0</td>
+                                    <td>
+                                        {!! Form::open(['url' => 'paychecks/pay'])!!}
+                                            <select name="pay_type_id" id="">
+                                                @foreach($payTypes as $payType)
+                                                <option value="{{ $payType->id }}">{{ $payType->pay_type_name }}</option>
+                                                @endforeach
+                                            </select>
+                                            {!! Form::hidden('employee_id', $paycheck->employee->id) !!}
+                                            {!! Form::hidden('paycheck_header_id', $paycheck->id) !!}
+                                            {!! Form::hidden('amount', null, array("id" => "hidden_amount")) !!}     
+                                    </td>
+                                    <td>
+                                        @if($paycheck->date_paid == "0000-00-00 00:00:00")
 
-                                <div class="panel-body">
-                                    <!-- <img class="emp_thumb"src="images/Legaspi M.jpg"/> -->
-                                    <h4>{{ $employee->first_name . " " . $employee->last_name }}</h4>
-                                    <p>Employee #: {{ $employee->employee_number }}</p>
-                                    
-                                        {!! Html::linkRoute('employees.show', 'Details', array($employee->id), array('class' => 'btn btn-success')) !!}
-                                        {!! Html::linkRoute('employees.edit', 'Edit', array($employee->id), array('class' => 'btn btn-primary')) !!}
-
-                                        {!! Form::model($employee, ['method' => 'delete', 'route' => ['employees.destroy', $employee->id], 'style' => 'display: inline;']) !!}
-                                            {!! Form::submit('Delete', ['class' => 'btn btn-danger']) !!}
+                                            {!! Form::submit('Pay', ['class' => 'btn btn-primary form-control']) !!}
                                         {!! Form::close() !!}
-                                    
-                                </div>
-                            </div>
-                        </div>
-                        @endforeach			
+                                        @else
+                                            <button class="btn btn-primary" disabled>Paid</button>
+                                        @endif
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>		
                     </div>
                     <!-- Thumbs end here -->
                     <div id="add" class="tab-pane fade">

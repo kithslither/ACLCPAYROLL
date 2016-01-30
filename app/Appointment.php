@@ -25,10 +25,6 @@ class Appointment extends Model
     	return $this->hasMany('App\Deduction');
     }
 
-    public function paycheck_headers(){
-    	return $this->hasMany('App\PaycheckHeader');
-    }
-
     public function paycheck_details(){
     	return $this->hasMany('App\PaycheckDetail');
     }
