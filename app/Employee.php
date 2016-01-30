@@ -12,6 +12,10 @@ class Employee extends Model
     	return $this->hasMany('App\Appointment');
     }
 
+    public function paycheck_headers(){
+    	return $this->hasMany('App\PaycheckHeader');
+    }
+
     public function user(){
     	return $this->belongsTo('App\User');
     }

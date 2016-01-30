@@ -15,6 +15,7 @@
                 <li>
                     {!! Html::linkRoute('employees.create', 'Add Employee', []) !!}
                 </li>
+                <li>{!! Html::linkRoute('paychecks.create', 'Generate Paycheck', []) !!}</li>
                 <li class="dropdown"><a data-toggle="dropdown" class="dropdown-toggle" href="#">Dropdown <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a data-toggle="tab" href="#dropdown1">Dropdown1</a></li>
