@@ -36,6 +36,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     	'store'
     ]]);
     Route::resource('paychecks', 'PaycheckController', ['only' =>[
-    	'store', 'create'
+    	'store', 'create', 'index'
     ]]);
+    Route::post('/paychecks/pay', 'PaycheckController@pay');
 });
