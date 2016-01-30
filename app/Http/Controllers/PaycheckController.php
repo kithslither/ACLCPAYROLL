@@ -56,14 +56,21 @@ class PaycheckController extends Controller
      */
     public function store(Request $request)
     {
-        $paycheckHeader = PaycheckHeader::create([
-            'employee_id' => $request->employee_id,
-            'check_number' => $request->check_number,
-            'pay_period_begin_date' => $request->pay_period_begin_date,
-            'pay_period_end_date' => $request->pay_period_end_date
-        ]);
+        $appointments = Appointment::where('employee_id', '=', $request->employee_id)
+            ->where('status', '=', 0)
+            ->where('created_at', '<', date("Y-m-d H:i:s", strtotime($request->pay_period_end_date)))
+            ->get();
 
-        $paycheckHeader->deductions()->attach($request->deduction_ids);
+        if( ! $appointments->isEmpty()) {
+            $paycheckHeader = PaycheckHeader::create([
+                'employee_id' => $request->employee_id,
+                'check_number' => $request->check_number,
+                'pay_period_begin_date' => $request->pay_period_begin_date,
+                'pay_period_end_date' => $request->pay_period_end_date
+            ]);
+
+            $paycheckHeader->deductions()->attach($request->deduction_ids);            
+        }
 
         return redirect('employees');
     }
