@@ -8,6 +8,8 @@ use App\Appointment;
 use App\Title;
 use App\Department;
 
+use Session;
+
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AddEmployeeRequest;
@@ -121,5 +123,66 @@ class EmployeeController extends Controller
     {
         $employee = Employee::find($id)->delete();
         return redirect()->route('employees.index');
+    }
+
+    public function auth(Request $request)
+    {
+        $employee = Employee::where('employee_number', '=', $request->employee_number)->first();
+
+        if($employee != null) {
+            Session::put('employee_number', $employee->employee_number);
+            return redirect('employees/dashboard');
+        } else{
+            return back();
+        }
+
+        
+    }
+
+    public function dashboard()
+    {
+        if(Session::has('employee_number')){
+
+            $employee = Employee::where('employee_number', '=', Session::get('employee_number'))->first();
+            $appointments = $employee->appointments;
+            $totalHours = 0;
+            $paidPaychecks = [];
+
+            foreach($appointments as $appointment){
+                $totalHours += str_replace(":", ".", date("G:i", strtotime($appointment->appointment_end_date) - strtotime($appointment->appointment_begin_date)));
+            }
+
+            $pendingPaychecks = $employee->paycheck_headers()->where('date_paid', '=', '0000-00-00 00:00:00')->get();
+            $paidPaycheckHeaders = $employee->paycheck_headers()->where('date_paid', '!=', '0000-00-00 00:00:00')->get();
+
+            if( ! $paidPaycheckHeaders->isEmpty()) {
+                foreach($paidPaycheckHeaders as $paidPaycheckHeader){
+                    $paidPaychecks[] = [
+                        'header'        => $paidPaycheckHeader,
+                        'detail'       => $paidPaycheckHeader->paycheck_detail,
+                        'deductions'    => $paidPaycheckHeader->deductions
+                    ];
+                }
+            }
+
+            $this->viewData = [
+                'employee'              => $employee,
+                'appointments'          => $appointments,
+                'totalHours'            => $totalHours,
+                'paidPaychecks'         => $paidPaychecks,
+                'pendingPaychecks'      => $pendingPaychecks
+            ];
+
+            return view('employees.dashboard')->with($this->viewData);
+        } else {
+            return redirect('/');
+        }
+    }
+
+    public function leave()
+    {
+        Session::forget('employee_number');
+
+        return redirect('/');
     }
 }
