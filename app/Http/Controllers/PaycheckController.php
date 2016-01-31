@@ -72,7 +72,7 @@ class PaycheckController extends Controller
             $paycheckHeader->deductions()->attach($request->deduction_ids);            
         }
 
-        return redirect('employees');
+        return redirect('paychecks');
     }
 
     public function pay(Request $request)

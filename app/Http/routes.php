@@ -27,6 +27,9 @@ Route::group(['middleware' => 'web'], function () {
 	Route::get('/', function () {
 	    return view('welcome');
 	});
+    Route::post('/employees/auth', 'EmployeeController@auth');
+    Route::get('/employees/dashboard', 'EmployeeController@dashboard');
+    Route::get('/employees/leave', 'Employeecontroller@leave');
 });
 
 Route::group(['middleware' => ['web', 'auth']], function () {
