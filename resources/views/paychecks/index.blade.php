@@ -20,16 +20,17 @@
     <div class="row">
         <div class="col-lg-12">
             <h1 class="page-header">
-            Employees
+            Payroll
             </h1>
             <!-- START TABS -->
             <ul class="nav nav-tabs">
-                <li>{!! Html::linkRoute('employees.index', 'Employees', []) !!}</li>
-                <li>{!! Html::linkRoute('employees.create', 'Add Employee', []) !!}</li>
-                <li>{!! Html::linkRoute('paychecks.create', 'Generate Paycheck', []) !!}</li>
+                <!-- <li>{!! Html::linkRoute('employees.index', 'Employees', []) !!}</li>
+                <li>{!! Html::linkRoute('employees.create', 'Add Employee', []) !!}</li> -->
+                
                 <li class="active">
                     <a href="#">Paychecks</a>
                 </li>
+                <li>{!! Html::linkRoute('paychecks.create', 'Generate Paycheck', []) !!}</li>
                 <li class="dropdown"><a data-toggle="dropdown" class="dropdown-toggle" href="#">Dropdown <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a data-toggle="tab" href="#dropdown1">Dropdown1</a></li>
@@ -76,7 +77,7 @@
                                     <td>{{ $paycheck->employee->first_name . " " . $paycheck->employee->last_name }}</td>
                                     <td>{{ date("M d Y", strtotime($paycheck->pay_period_begin_date)) . " - " . date("M d Y", strtotime($paycheck->pay_period_end_date)) }}</td>
                                     <td>
-                                        <input type="number" id="rate">
+                                        <input class="form-control" type="number" id="rate">
                                     </td>
                                     <td id="deduction">
                                         <?php $deductionAmount = 0; ?>
@@ -100,7 +101,7 @@
                                     <td id="amount">0</td>
                                     <td>
                                         {!! Form::open(['url' => 'paychecks/pay'])!!}
-                                            <select name="pay_type_id" id="">
+                                            <select class="form-control" name="pay_type_id" id="">
                                                 @foreach($payTypes as $payType)
                                                 <option value="{{ $payType->id }}">{{ $payType->pay_type_name }}</option>
                                                 @endforeach
